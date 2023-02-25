@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otus-deployment-month2-lesson7
+  namespace: m
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app:  otus-month2-lesson7
+  template:
+    metadata:
+      labels:
+        app: otus-month2-lesson7
+    spec:
+      containers:
+        - name: otus-month2-lesson7
+          image: andreykotofotoff/otus-month2-lesson7:v4
+          ports:
+            - name: web
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
