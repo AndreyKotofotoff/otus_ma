@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: otus-deployment-month2-lesson8
+  namespace: m
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app:  otus-month2-lesson8
+  template:
+    metadata:
+      labels:
+        app: otus-month2-lesson8
+    spec:
+      containers:
+        - name: otus-month2-lesson8
+          image: andreykotofotoff/otus-month2-lesson8
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: otus-db-secret
+            - configMapRef:
+                name: otus-configmap
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5

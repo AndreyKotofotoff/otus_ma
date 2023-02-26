@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: otus-scripts-db-configmap
+  namespace: m
+data:
+  DROP_TABLE: "drop table if exists public.users;;"
+  CREATE_TABLE: "create table if not exists public.users(userid serial primary key, name text, age integer);"
+  INSERT_USER: "INSERT INTO public.users (name, age) values ('User 1', 18);"

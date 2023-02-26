@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: otus-configmap
+  namespace: m
+data:
+  DB_HOST: "otus-svc-db-month2-lesson8.m"
+  DB_PORT: "5432"
+  APP_NAME: "month2-lesson8"
+  APP_PORT: "8000"

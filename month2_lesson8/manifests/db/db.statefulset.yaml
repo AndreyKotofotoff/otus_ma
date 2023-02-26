@@ -1,0 +1,37 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: otus-statefulset-db-month2-lesson8
+  namespace: m
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  otus-db-month2-lesson8
+  template:
+    metadata:
+      labels:
+        app: otus-db-month2-lesson8
+    spec:
+      containers:
+        - name: db
+          image: postgres:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: otus-db-secret
+            - configMapRef:
+                name: otus-configmap
+          volumeMounts:
+            - name: otus-db-disk-month2-lesson8
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: otus-db-disk-month2-lesson8
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

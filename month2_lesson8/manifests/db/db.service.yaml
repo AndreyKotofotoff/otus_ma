@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: otus-svc-db-month2-lesson8
+  namespace: m
+spec:
+  type: LoadBalancer
+  selector:
+    app: otus-db-month2-lesson8
+  ports:
+    - port: 5432
+      targetPort: 5432
