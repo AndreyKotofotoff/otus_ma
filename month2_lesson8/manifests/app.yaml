@@ -1,5 +1,0 @@
-  cat <<EOF >>./app.yaml
-  resources:
-    - mysql-deployment.yaml
-    - wordpress-deployment.yaml
-    EOF

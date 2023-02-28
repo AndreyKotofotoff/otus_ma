@@ -30,5 +30,5 @@ spec:
             {{- $files := .Files }}
             {{- range tuple "db-scripts/create-table.sql" "db-scripts/init-users.sql" }}
             - c
-            - {{ $files.Get . -}}
+            - {{ $files.Get . | quote }}
             {{- end }}
