@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ print .Release.Name "-svc-db" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  type: LoadBalancer
+  selector:
+    {{ template "database.label" . }}
+  ports:
+    - port: {{ default 5432 .Values.db.port }}
+      targetPort: {{ default 5432 .Values.db.port }}

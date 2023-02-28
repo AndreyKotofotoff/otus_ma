@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ print .Release.Name "-app-deploy" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      {{ template "app.label" . }}
+  template:
+    metadata:
+      labels:
+        {{ template "app.label" . }}
+    spec:
+      containers:
+        - name: {{ print .Release.Name | quote }}
+          image: {{ print .Values.app.image.repository ":" .Values.app.image.tag | quote }}
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - containerPort: {{ default 8000 .Values.app.port }}
+          envFrom:
+            - secretRef:
+                name: {{ print .Release.Name "-db-secret" | quote }}
+            - configMapRef:
+                name: {{ print .Release.Name "-configmap" | quote }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ default 8000 .Values.app.port }}
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ default 8000 .Values.app.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5

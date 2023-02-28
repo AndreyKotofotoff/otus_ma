@@ -1,0 +1,30 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ print .Release.Name "-pv-db" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+    {{ template "database.label" . }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.volume.size }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/db
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ print .Release.Name "-pvc-db" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+    {{ template "database.label" . }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.volume.size }}

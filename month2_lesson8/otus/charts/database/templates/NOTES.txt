@@ -1,0 +1,9 @@
+БД для ДЗ "простейший RESTful CRUD по созданию, удалению, просмотру и обновлению пользователей."
+
+БД используется из образа {{ print .Values.db.image.repository ":" .Values.db.image.tag | quote }}
+
+Подключение к БД возможно при подключении к порту {{ default 5432 .Values.db.port }}
+
+Предустановленные данные
+- Наполнение данных осуществляется через Job {{ print .Release.Name "-init-db-job" | quote }}
+- Для повторного запуска необходимо подготовить БД заново используя Job {{ print .Release.Name "-restart-db-job" | quote }}

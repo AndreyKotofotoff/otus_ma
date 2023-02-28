@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ print .Release.Name "-svc" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  type: ClusterIP
+  selector:
+    {{ template "app.label" . }}
+  ports:
+    - protocol: TCP
+      port: {{ default 7999 .Values.service.port }}
+      targetPort: {{ default 8000 .Values.app.port }}

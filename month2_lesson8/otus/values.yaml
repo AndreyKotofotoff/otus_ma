@@ -1,0 +1,8 @@
+namespace: "m"
+
+app:
+  protocol: http
+  host: arch.homework
+
+db:
+  port: 5432

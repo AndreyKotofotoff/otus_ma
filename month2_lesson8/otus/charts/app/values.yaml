@@ -1,0 +1,16 @@
+namespace: "m"
+
+app:
+  protocol: http
+  host: arch.homework
+  port: 8000
+  image:
+    repository: andreykotofotoff/otus-month2-lesson8
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+  port: 7999
+
+db:
+  port: 5432

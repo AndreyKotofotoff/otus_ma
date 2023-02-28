@@ -1,0 +1,21 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ print .Release.Name "-app-ingress" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.app.host }}
+      {{ .Values.app.protocol }}:
+        paths:
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ print .Release.Name "-svc" | quote }}
+                port:
+                  number: {{ default 7999 .Values.service.port }}

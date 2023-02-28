@@ -1,0 +1,38 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ print .Release.Name "-statefulset-db" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  serviceName: {{ print .Release.Name "-statefulset-db-svc" | quote }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ template "database.label" . }}
+  template:
+    metadata:
+      labels:
+        {{ template "database.label" . }}
+    spec:
+      containers:
+        - name: db
+          image: {{ print .Values.db.image.repository ":" .Values.db.image.tag | quote }}
+          imagePullPolicy: {{ .Values.db.image.pullPolicy }}
+          ports:
+            - containerPort: {{ default 5432 .Values.db.port }}
+          envFrom:
+            - secretRef:
+                name: {{ print .Release.Name "-db-secret" | quote }}
+            - configMapRef:
+                name: {{ print .Release.Name "-configmap" | quote }}
+          volumeMounts:
+            - name: {{ print .Release.Name "-db-disk" | quote }}
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ print .Release.Name "-db-disk" | quote }}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.volume.size }}

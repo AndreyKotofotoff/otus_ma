@@ -1,0 +1,14 @@
+namespace: "m"
+job:
+  ttlSecondsAfterFinished: 120
+
+volume:
+  size: 1Gi
+
+db:
+  image:
+    repository: postgres
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 5432
+  connectionString: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(POSTGRES_DB)

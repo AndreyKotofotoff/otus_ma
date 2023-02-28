@@ -1,0 +1,14 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ print .Release.Name "-configmap" | quote }}
+  namespace: {{ .Values.namespace | quote }}
+  annotations:
+    # Note that if there is no such comment below, the current job will be treated as part of the release.
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+data:
+  DB_HOST: {{ print .Release.Name "-svc-db" | quote }} #"otus-svc-db-month2-lesson8.m"
+  DB_PORT: {{ default 5432 .Values.db.port | quote }}
+  APP_NAME: {{ print .Release.Name "-" .Release.Revision | quote }}
+  APP_PORT: {{ default 8000 .Values.app.port | quote }}
