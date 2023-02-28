@@ -4,6 +4,7 @@ metadata:
   name: otus-statefulset-db-month2-lesson8
   namespace: m
 spec:
+  serviceName: otus-service-db-month2-lesson8
   replicas: 1
   selector:
     matchLabels:
