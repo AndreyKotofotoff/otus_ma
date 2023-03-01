@@ -1,6 +1,4 @@
 namespace: "m"
-job:
-  ttlSecondsAfterFinished: 120
 
 volume:
   size: 1Gi

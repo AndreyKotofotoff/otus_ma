@@ -3,14 +3,9 @@ apiVersion: batch/v1
 metadata:
   name: {{ print .Release.Name "-init-db-job" | quote }}
   namespace: {{ .Values.namespace | quote }}
-  annotations:
-    # Note that if there is no such comment below, the current job will be treated as part of the release.
-    "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "2"
-    #"helm.sh/hook-delete-policy": hook-succeeded
 spec:
   backoffLimit: 10
-  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
   template:
     spec:
       restartPolicy: Never
@@ -18,17 +13,18 @@ spec:
         - name: init-db-job
           image: {{ print .Values.db.image.repository ":" .Values.db.image.tag | quote }}
           imagePullPolicy: {{ .Values.db.image.pullPolicy }}
+          {{- $appName := .Values.app | required "APP name is required!" }}
           envFrom:
             - secretRef:
-                name: {{ print .Release.Name "-db-secret" | quote }}
+                name: {{ print $appName "-db-secret" | quote }}
             - configMapRef:
-                name: {{ print .Release.Name "-configmap" | quote }}
+                name: {{ print $appName "-configmap" | quote }}
           command: ["psql"]
           args:
             - -Atq
             - {{ .Values.db.connectionString }}
             {{- $files := .Files }}
             {{- range tuple "db-scripts/create-table.sql" "db-scripts/init-users.sql" }}
-            - c
-            - {{ $files.Get . | quote }}
+            - -c
+            - {{ $files.Get . | trim | quote }}
             {{- end }}
